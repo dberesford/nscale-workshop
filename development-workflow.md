@@ -5,12 +5,12 @@ Can we use nScale during the development workflow? Yes, with
 process-containers!
 
 A process container is a 'fake' container, a standard unix process on
-nScale host, managed by nScale. All the repositories defined in your
+an nScale host, managed by nScale. All the repositories defined in your
 topology will be checked out from GIT for you in workspace/\<SERVICE\>,
-and you can make your edit there.
+and you can make your development changes there.
 
 The most important feature for the development work it is the onboarding
-of new developers into the project and manage any changes in the
+of new developers to the project and manage any changes in the
 dependencies easily.
 
 This guide is composed of two sections:
@@ -31,7 +31,7 @@ cd sudc-system
 nsd sys link .
 ```
 
-The system will be setted up for local development by issuing:
+The system will be set up for local development by issuing:
 
 ```bash
 nsd sys compile process
@@ -52,7 +52,7 @@ nsd rev dep head
 Point your browser to http://localhost:8000 to see the Startup Death
 Clock.
 
-As pointed out in the output of `nsd rev dep head`, you can launch
+As pointed out in the output of `nsd rev dep head`, you can launch:
 
 ```
 tail -f ~/.nscale/log/998e0589-0936-4102-b859-d6192011c355.log
@@ -82,15 +82,15 @@ Launch:
 
 ```bash
 $ nsd sys create
-? What is the system name? nscale-kv
+? What is the system name? nscalekv
 ? What is the system namespace? nscalekv
-? Confirm creating system "nscale-kv" with namespace "nscale-kv"? Yes
+? Confirm creating system "nscalekv" with namespace "nscalekv"? Yes
 ```
 
 Then:
 
 ```bash
-cd nscale-kv
+cd nscalekv
 ```
 
 ### Add a database
@@ -138,18 +138,17 @@ docker ps
 And note down your container name, then:
 
 ```bash
-docker run -it --link IMAGE_NAME:redis --rm redis sh -c 'exec redis-cli
--h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+docker run -it --link IMAGE_NAME:redis --rm redis sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
 ```
 
-Where you should replace IMAGE\_NAME with the name you just noted down.
+Where you should replace IMAGE_NAME with the name you just noted down. Note that docker automatically generates quirky names for containers, so don't be surprised to see 'boring_kirch' or something like that! 
 
 nscale can now spin up a Redis server for your local developement!
 
 ### Add your app
 
 First, create a git repository on Github/BitBucket/whatever for our new
-project `nscale-kv-demo`.
+project `nscalekv-demo`.
 
 Then, add to `definitions/services.js` the following:
 
@@ -158,7 +157,7 @@ exports.web = {
   type: 'process',
   specific: {
     // replace repositoryUrl with the repo you just created
-    repositoryUrl: 'git@github.com:nearform/nscale-kv-demo.git',
+    repositoryUrl: 'git@github.com:nearform/nscalekv-demo.git',
     processBuild: 'npm install',
     execute: {
       process: './server.js'
@@ -190,7 +189,7 @@ The latest command will fail, because we did not add a `package.json`:
 ```
 --> finding container
 --> synchronizing repository...
-Cloning into 'nscale-kv-demo'...
+Cloning into 'nscalekv-demo'...
 
 --> initiating container build
 --> executing container specific build for web
@@ -208,14 +207,14 @@ npm ERR! node v0.10.33
 npm ERR! npm
  v2.1.10
 npm ERR! path
-/Users/matteocollina/Temp/nscalekv/workspace/nscale-kv-demo/package.json
+/Users/matteocollina/Temp/nscalekv/workspace/nscalekv-demo/package.json
 
 npm ERR! code ENOPACKAGEJSON
 npm ERR! errno 34
 
 
 npm ERR! package.json ENOENT, open
-'/Users/matteocollina/Temp/nscalekv/workspace/nscale-kv-demo/package.json'
+'/Users/matteocollina/Temp/nscalekv/workspace/nscalekv-demo/package.json'
 npm ERR! package.json This is most likely not a problem with npm itself.
 npm ERR! package.json npm can't find a package.json file in your
 current directory.
@@ -223,7 +222,7 @@ current directory.
 
 npm ERR! Please include the following file with any support request:
 npm ERR!
-/Users/matteocollina/Temp/nscalekv/workspace/nscale-kv-demo/npm-debug.log
+/Users/matteocollina/Temp/nscalekv/workspace/nscalekv-demo/npm-debug.log
 
 { cmd: 'npm install', code: 34 }
 { cmd: 'npm install', code: 34 }
@@ -231,7 +230,7 @@ command failed
 ```
 
 We should initialize our project, so cd into
-`workspace/nscale-kv-demo`, and launch:
+`workspace/nscalekv-demo`, and launch:
 
 ```
 npm init
@@ -250,46 +249,46 @@ Use `npm install <pkg> --save` afterwards to install a package and
 save it as a dependency in the package.json file.
 
 Press ^C at any time to quit.
-name: (nscale-kv-demo)
+name: (nscalekv-demo)
 version: (1.0.0)
 description:
 entry point: (index.js) server.js
 test command:
-git repository: (https://github.com/nearform/nscale-kv-demo.git)
+git repository: (https://github.com/nearform/nscalekv-demo.git)
 keywords:
 author: Matteo Collina <matteo.collina@nearform.com>
 license: (ISC) MIT
 About to write to
-/Users/matteocollina/Temp/nscalekv/workspace/nscale-kv-demo/package.json:
+/Users/matteocollina/Temp/nscalekv/workspace/nscalekv-demo/package.json:
 
 {
-  "name": "nscale-kv-demo",
+  "name": "nscalekv-demo",
   "version": "1.0.0",
-  "description": "nscale-kv-demo ==============",
+  "description": "nscalekv-demo ==============",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nearform/nscale-kv-demo.git"
+    "url": "https://github.com/nearform/nscalekv-demo.git"
   },
   "author": "Matteo Collina <matteo.collina@nearform.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nearform/nscale-kv-demo/issues"
+    "url": "https://github.com/nearform/nscalekv-demo/issues"
   },
-  "homepage": "https://github.com/nearform/nscale-kv-demo"
+  "homepage": "https://github.com/nearform/nscalekv-demo"
 }
 
 
 Is this ok? (yes) yes
 ```
 
-Then, you must install redis:
+Then, you must install:
 
 ```
-npm install redis --save
+npm install redis concat-stream --save
 ```
 
 Fire up your editor, and add a `server.js` file with the content:
